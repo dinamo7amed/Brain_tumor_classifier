@@ -3,6 +3,6 @@ tensorflow
 numpy
 pillow
 gdown
-matplotlib
-requests
 streamlit-lottie
+requests
+h5py
