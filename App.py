@@ -5,8 +5,12 @@ from tensorflow.keras.models import load_model
 import time
 from streamlit_lottie import st_lottie
 import requests
+import gdown
+import os
 
-# Load Lottie Animation 
+# -------------------------------
+# Load Lottie Animation
+# -------------------------------
 def load_lottieurl(url):
     r = requests.get(url)
     if r.status_code != 200:
@@ -15,7 +19,9 @@ def load_lottieurl(url):
 
 lottie_animation = load_lottieurl("https://assets1.lottiefiles.com/packages/lf20_x62chJ.json")
 
-# Page Background & Title 
+# -------------------------------
+# Page Background & Title
+# -------------------------------
 st.set_page_config(page_title="Brain Tumor Classifier", layout="centered")
 
 st.markdown("""
@@ -33,19 +39,25 @@ st.markdown("""
 
 st.title("Brain Tumor Classification")
 
-import gdown
-import os
-
-model_url = "https://drive.google.com/file/d/19NAHbeO7lij8vcFD6_8u202JBK9KakRN"
+# -------------------------------
+# Download Model if not exists
+# -------------------------------
+model_url = "https://drive.google.com/uc?id=19NAHbeO7lij8vcFD6_8u202JBK9KakRN"
 model_path = "brain_tumor_classification.h5"
 
 if not os.path.exists(model_path):
-    gdown.download("https://drive.google.com/file/d/19NAHbeO7lij8vcFD6_8u202JBK9KakRN/view?usp=sharing", model_path, quiet=False)
+    st.info("Downloading model... Please wait ⏳")
+    gdown.download(model_url, model_path, quiet=False)
+    st.success("Model downloaded ✅")
 
-# ---- Load Model ----
-model = load_model("brain_tumor_classification.h5")
+# -------------------------------
+# Load Model
+# -------------------------------
+model = load_model(model_path)
 
-# ---- Upload Image ----
+# -------------------------------
+# Upload Image
+# -------------------------------
 uploaded_file = st.file_uploader("Choose an image", type=["png","jpg","jpeg"])
 if uploaded_file is not None:
     img = Image.open(uploaded_file).resize((224,224)).convert("RGB")
@@ -55,7 +67,7 @@ if uploaded_file is not None:
 
     st.image(img, caption="Uploaded Image", use_column_width=True)
 
-    # Display Lottie Animation 
+    # Display Lottie Animation
     st_lottie(lottie_animation, speed=1, width=300, height=300, key="brain")
 
     # Fake Progress Bar
@@ -64,8 +76,11 @@ if uploaded_file is not None:
         time.sleep(0.01)
         my_bar.progress(percent_complete + 1)
 
-    #Predict 
+    # Predict
     prediction = model.predict(img_array)
-    st.write("Prediction:", prediction)
 
+    # Assuming 4 classes: adjust as per your model
+    classes = ["No Tumor", "Glioma", "Meningioma", "Pituitary"]
+    pred_class = classes[np.argmax(prediction)]
 
+    st.markdown(f"### Prediction: **{pred_class}**")
