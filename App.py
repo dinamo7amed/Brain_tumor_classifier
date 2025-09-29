@@ -42,7 +42,7 @@ st.title("Brain Tumor Classification")
 # -------------------------------
 # Download Model if not exists
 # -------------------------------
-model_url = "https://drive.google.com/uc?id=19NAHbeO7lij8vcFD6_8u202JBK9KakRN"
+model_url = "https://huggingface.co/dinamo7amed/brain_tumor_model/resolve/main/brain_tumor_classification.h5"
 model_path = "brain_tumor_classification.h5"
 
 if not os.path.exists(model_path):
