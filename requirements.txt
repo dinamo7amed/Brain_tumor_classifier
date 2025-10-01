@@ -6,3 +6,5 @@ gdown
 streamlit-lottie
 requests
 h5py
+os
+PIL
