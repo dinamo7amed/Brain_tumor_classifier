@@ -5,7 +5,6 @@ from tensorflow.keras.models import load_model
 import time
 from streamlit_lottie import st_lottie
 import requests
-import gdown
 import os
 
 # -------------------------------
@@ -47,7 +46,9 @@ model_path = "brain_tumor_classification.h5"
 
 if not os.path.exists(model_path):
     st.info("Downloading model... Please wait ⏳")
-    gdown.download(model_url, model_path, quiet=False)
+    r = requests.get(model_url)
+    with open(model_path, "wb") as f:
+        f.write(r.content)
     st.success("Model downloaded ✅")
 
 # -------------------------------
